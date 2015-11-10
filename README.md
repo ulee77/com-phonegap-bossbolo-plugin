@@ -3,9 +3,13 @@
 
 
 ## 安装插件
-* phonegap plugin add com-phonegap-bossbolo-plugin
-* 或
-* phonegap plugin add https://github.com/ulee77/com-phonegap-bossbolo-plugin.git
+```sh
+phonegap plugin add com-phonegap-bossbolo-plugin
+```
+或
+```sh
+phonegap plugin add https://github.com/ulee77/com-phonegap-bossbolo-plugin.git
+```
 
 ##平台支持
 - phoengap 5+
