@@ -1,0 +1,32 @@
+{
+  "name": "com-phonegap-bossbolo-plugin",
+  "version": “1.0.0”,
+  "description": "布络PhoneGap插件",
+  "cordova": {
+    "id": "com-phonegap-bossbolo-plugin",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ulee77/com-phonegap-bossbolo-plugin"
+  },
+  "keywords": [
+    "cordova",
+    "phonegap",
+    "bossbolo",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "author": "Apache Software Foundation",
+  "license": "Apache 2.0"
+}
