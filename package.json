@@ -17,6 +17,9 @@
     "cordova",
     "phonegap",
     "bossbolo",
+    "BoloPlugin",
+    "boloPlugin",
+    "boloplugin",
     "ecosystem:cordova",
     "cordova-android",
     "cordova-ios"
