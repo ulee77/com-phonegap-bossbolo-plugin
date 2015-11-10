@@ -14,7 +14,7 @@ phonegap plugin add https://github.com/ulee77/com-phonegap-bossbolo-plugin.git
 
 ##通用接口说明
 
-退出应用\n
+退出应用:
 window.BoloPlugin.exitApp();
 
 获取应用设备唯一标识
