@@ -20,24 +20,42 @@
 package com.phonegap.bossbolo.plugin;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.ConfigXmlParser;
 import org.apache.cordova.CordovaArgs;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
+import org.json.JSONArray;
 import org.json.JSONException;
 
-public class StatusBar extends CordovaPlugin {
+import com.umeng.update.UmengUpdateAgent;
+import com.umeng.update.UmengUpdateListener;
+import com.umeng.update.UpdateResponse;
+import com.umeng.update.UpdateStatus;
+
+public class BoloPlugin extends CordovaPlugin {
     private static final String TAG = "BoosboloPlugin";
+    private CordovaWebView webView;
     private Activity activity;
     private Window window;
+    
+    private Boolean haveUpdate = null;
+    private Boolean updateIsCallback = false;
 
     /**
      * Sets the context of the Command. This can then be used to do things like
@@ -50,8 +68,25 @@ public class StatusBar extends CordovaPlugin {
     public void initialize(final CordovaInterface cordova, CordovaWebView webView) {
         Log.v(TAG, "StatusBar: initialization");
         super.initialize(cordova, webView);
+        this.webView = webView;
         this.activity = cordova.getActivity();
         this.window = this.activity.getWindow();
+        
+        ConfigXmlParser parser = new ConfigXmlParser();
+        CustomGlobal.getInstance().setLaunchUrl(parser.getLaunchUrl());
+        
+        UmengUpdateAgent.setUpdateOnlyWifi(false);
+        UmengUpdateAgent.setUpdateAutoPopup(false);
+        UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
+            @Override
+            public void onUpdateReturned(int updateStatus,UpdateResponse updateInfo) {
+            	if(updateStatus == UpdateStatus.Yes){
+            		haveUpdate = true;
+            		UmengUpdateAgent.showUpdateDialog(activity.getApplicationContext(), updateInfo);
+            	}
+            	updateIsCallback = true;
+            }
+        });
 
         /*this.cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -71,7 +106,7 @@ public class StatusBar extends CordovaPlugin {
      * @return                  True if the action was valid, false otherwise.
      */
     @Override
-    public boolean execute(final String action, final CordovaArgs args, final CallbackContext callbackContext) throws JSONException {
+    public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
         Log.v(TAG, "Executing action: " + action);
         if (action.equals("exitApp")) {
         	exitAppp ();
@@ -89,6 +124,7 @@ public class StatusBar extends CordovaPlugin {
         }else{
             return false;
         }
+		return true;
     }
 
     
@@ -98,8 +134,12 @@ public class StatusBar extends CordovaPlugin {
     }
     
     public void checkVersion(CallbackContext callbackContext){
-    	CustomGlobal.getInstance().setUpdateCallback(callbackContext);
-    	UmengUpdateAgent.update(webView.getContext());
+    	updateIsCallback = false;
+    	UmengUpdateAgent.update(this.webView.getContext());
+    	while (!updateIsCallback) {
+			Log.v("update", "版本更新响应");
+		}
+    	callbackContext.success(haveUpdate?1:-1);
     }
     
     public void getLoaded(JSONArray args, final CallbackContext callbackContext){
