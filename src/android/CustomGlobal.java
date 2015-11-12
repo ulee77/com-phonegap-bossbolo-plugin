@@ -15,16 +15,14 @@ public class CustomGlobal {
 	private int loaded = 0;
 	private String launchUrl;
 	private int heartMessageType;
-	
-	private CordovaArgs connectArgs;
-	
+	private String tocken;
 
-	public CordovaArgs getConnectArgs() {
-		return connectArgs;
+	public String getTocken() {
+		return tocken;
 	}
 
-	public void setConnectArgs(CordovaArgs connectArgs) {
-		this.connectArgs = connectArgs;
+	public void setTocken(String tocken) {
+		this.tocken = tocken;
 	}
 
 	public int getHeartMessageType() {
