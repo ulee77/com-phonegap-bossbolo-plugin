@@ -8,7 +8,7 @@ phonegap plugin add https://github.com/ulee77/com-phonegap-bossbolo-plugin.git
 ```
 卸载命令
 ```sh
-phonegap plugin add com-phonegap-bossbolo-plugin
+phonegap plugin rm com-phonegap-bossbolo-plugin
 ```
 
 ##平台支持
