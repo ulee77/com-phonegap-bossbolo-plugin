@@ -1,5 +1,6 @@
 {
   "name": "com-phonegap-bossbolo-plugin",
+  "version": "1.0.1",
   "description": "布络PhoneGap插件",
   "cordova": {
     "id": "com-phonegap-bossbolo-plugin",
