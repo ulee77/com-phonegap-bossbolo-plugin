@@ -22,7 +22,7 @@
     xmlns:rim="http://www.blackberry.com/ns/widgets"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com-phonegap-bossbolo-plugin"
-    version="1.0.0">
+    version="1.0.1">
     <name>BoloPlugin</name>
     <description>布络PhoneGap插件</description>
     <license>Apache 2.0</license>
