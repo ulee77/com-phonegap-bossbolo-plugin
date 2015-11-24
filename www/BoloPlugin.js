@@ -21,10 +21,6 @@
 
 var exec = require('cordova/exec');
 
-LoadedStatus = {
-
-};
-
 var BoloPlugin = {
     LoadedStatus : {
         LOADED : 1,
@@ -33,31 +29,34 @@ var BoloPlugin = {
 
     //退出应用
     exitApp:function() {
-        exec(null, null, "SplashScreen", "exitApp", []);
+        exec(null, null, "BoloPlugin", "exitApp", []);
     },
 
     //获取应用设备唯一标识
     getDeviceToken : function(callback) {
-        exec(callback, null, "SplashScreen", "getDeviceToken", []);
+        exec(callback, null, "BoloPlugin", "getDeviceToken", []);
     },
 
-    //检查版本,需集成友盟自动更新插件(仅支持Android)
+    //检查版本,需集成友盟自动更新插件(仅支持Android),返回1、-1
     checkVersion : function(callback){
-        if($.os.ios)return;
-        callback = callback || function(flag){};
-        var checkResult = function(result){callback(result==1);};
-        exec(checkResult, null, "BoloPlugin", "checkVersion", []);
+        if($.os.android){
+            exec(callback, null, "SplashScreen", "checkVersion", []);
+        }else{
+            callback(-1);
+        }
     },
 
     //获取/设置 本次载入主页时在本次应用启动生命周期内是否已呗载入过，通常与appReload配合使用，判断是否需要自动登录。
     getLoaded:function(callback) {
-        exec(callback, null, "SplashScreen", "getLoaded", []);
+        exec(callback, null, "BoloPlugin", "getLoaded", []);
     },
     setLoaded : function(loaded){
-        exec(null, null, "SplashScreen", "setLoaded", [loaded]);
+        exec(null, null, "BoloPlugin", "setLoaded", [loaded]);
     },
     //重载应用，即页面完全刷新
-    appReload : function(){},
+    appReload : function(url){
+        exec(null, null, "BoloPlugin", "appReload", [url]);
+    },
 
     //卸载指定包名应用(仅支持Android)
     uninstallBPP : function(pageName){
