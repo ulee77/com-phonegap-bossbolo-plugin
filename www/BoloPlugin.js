@@ -40,7 +40,7 @@ var BoloPlugin = {
     //检查版本,需集成友盟自动更新插件(仅支持Android),返回1、-1
     checkVersion : function(callback){
         if($.os.android){
-            exec(callback, null, "SplashScreen", "checkVersion", []);
+            exec(callback, null, "BoloPlugin", "checkVersion", []);
         }else{
             callback(-1);
         }
