@@ -54,8 +54,9 @@ public class BoloPlugin extends CordovaPlugin {
     private Activity activity;
     private Window window;
     
-    private Boolean haveUpdate = null;
+    private Boolean haveUpdate = false;
     private Boolean updateIsCallback = false;
+    private CallbackContext callback; 
 
     /**
      * Sets the context of the Command. This can then be used to do things like
@@ -121,6 +122,8 @@ public class BoloPlugin extends CordovaPlugin {
         	appReload();
         } else if(action.equals("uninstallBPP")){
         	uninstallBPP();
+        } else if(action.equals("getDeviceToken")){
+        	getDeviceToken(callbackContext);
         }else{
             return false;
         }
@@ -133,13 +136,14 @@ public class BoloPlugin extends CordovaPlugin {
     	System.exit(0);   //常规java、c#的标准退出法，返回值为0代表正常退出
     }
     
-    public void checkVersion(CallbackContext callbackContext){
+    public void checkVersion(final CallbackContext callbackContext){
+    	this.callback = callbackContext;
     	updateIsCallback = false;
     	UmengUpdateAgent.update(this.webView.getContext());
     	while (!updateIsCallback) {
-			Log.v("update", "版本更新响应");
+			Log.v("wait update", "版本更新响应");
 		}
-    	callbackContext.success(haveUpdate?1:-1);
+    	this.callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, haveUpdate));
     }
     
     public void getLoaded(JSONArray args, final CallbackContext callbackContext){
@@ -187,4 +191,7 @@ public class BoloPlugin extends CordovaPlugin {
 		}
     }
     
+    public void getDeviceToken(final CallbackContext callbackContext){
+    	callbackContext.success(CustomGlobal.getInstance().getTocken());
+    }
 }

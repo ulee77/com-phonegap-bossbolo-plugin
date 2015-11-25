@@ -37,12 +37,13 @@ var BoloPlugin = {
         exec(callback, null, "BoloPlugin", "getDeviceToken", []);
     },
 
-    //检查版本,需集成友盟自动更新插件(仅支持Android),返回1、-1
+    //检查版本,需集成友盟自动更新插件(仅支持Android),直接返回true/false代表是否有更新
     checkVersion : function(callback){
+        callback = callback || function(){};
         if($.os.android){
             exec(callback, null, "BoloPlugin", "checkVersion", []);
         }else{
-            callback(-1);
+            callback(false);
         }
     },
 
