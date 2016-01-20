@@ -21,6 +21,7 @@ package com.phonegap.bossbolo.plugin;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -28,6 +29,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 import android.view.Window;
@@ -57,6 +59,8 @@ public class BoloPlugin extends CordovaPlugin {
     private Boolean haveUpdate = false;
     private Boolean updateIsCallback = false;
     private CallbackContext callback; 
+    
+    private Context mContext;
 
     /**
      * Sets the context of the Command. This can then be used to do things like
@@ -72,6 +76,7 @@ public class BoloPlugin extends CordovaPlugin {
         this.webView = webView;
         this.activity = cordova.getActivity();
         this.window = this.activity.getWindow();
+        this.mContext = this.webView.getContext();
         
         ConfigXmlParser parser = new ConfigXmlParser();
         CustomGlobal.getInstance().setLaunchUrl(parser.getLaunchUrl());
@@ -139,11 +144,44 @@ public class BoloPlugin extends CordovaPlugin {
     public void checkVersion(final CallbackContext callbackContext){
     	this.callback = callbackContext;
     	updateIsCallback = false;
-    	UmengUpdateAgent.update(this.webView.getContext());
-    	while (!updateIsCallback) {
-			Log.v("wait update", "版本更新响应");
+    	UpdateTask updateTask = new UpdateTask();  
+    	updateTask.execute(1001);
+//    	UmengUpdateAgent.update(this.webView.getContext());
+//    	while (!updateIsCallback) {
+//			Log.v("wait update", "版本更新响应");
+//		}
+//    	this.callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, haveUpdate));
+    }
+    
+    private class UpdateTask extends AsyncTask<Integer, Integer, String> {
+
+    	//onPreExecute方法用于在执行后台任务前做一些UI操作 
+    	@Override   
+        protected void onPreExecute() {  
+    		UmengUpdateAgent.update(mContext);
+        } 
+    	
+    	//doInBackground方法内部执行后台任务,不可在此方法内修改UI
+		@Override
+		protected String doInBackground(Integer... params) {
+			while (!updateIsCallback) {
+				Log.v("wait update", "版本更新等待...");
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return null;
 		}
-    	this.callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, haveUpdate));
+		
+		//onPostExecute方法用于在执行完后台任务后更新UI,显示结果  
+        @Override  
+        protected void onPostExecute(String result) {  
+        	callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, haveUpdate));
+        }
+    	
     }
     
     public void getLoaded(JSONArray args, final CallbackContext callbackContext){
